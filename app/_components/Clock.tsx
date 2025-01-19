@@ -3,36 +3,33 @@
 import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 
-export default function Clock() {
+type DateTime = {
+  date: string,
+  time: string
+}
+
+export default function Clock({ dateTime }: { dateTime: DateTime }) {
 	const timer = useRef<NodeJS.Timeout | null>(null);
-	const [time, setTime] = useState<{ date: string, time: string } | null>(null);
+	const [time, setTime] = useState<DateTime>(dateTime);
 
-	useEffect(() => {
-		timer.current = setInterval(() => {
-			const now = Date.now()
-			setTime({
-				date: format(now, "eeee do LLLL"),
-				time: format(now, "p")
-			})
-		}, 1000)
-		return () => clearInterval(timer.current as NodeJS.Timeout);
-	}, []);
+  useEffect(() => {
+    timer.current = setInterval(() => {
+      const now = Date.now()
+      setTime({
+        date: format(now, "eeee do LLLL"),
+        time: format(now, "p")
+      })
+    }, 1000)
 
-	return (
-		<div>
+    return () => clearInterval(timer.current as NodeJS.Timeout);
+  }, []);
 
-			<div className="mx-auto my-10 max-w-fit text-center">
-				{!time ? (<>
-					<div className="blur-md animate-pulse">
-						<div className="lg:text-xl">asdfasdf 12th daedasg</div>
-						<div className="text-4xl lg:text-5xl">  2:00 PM</div>
-					</div>
-				</>) : (<>
-					<div className="lg:text-xl">{time.date}</div>
-					<div className="text-4xl lg:text-5xl">{time.time}</div>
-				</>)}
-			</div>
-
-		</div>
-	)
+  return (
+    <div>
+      <div className="mx-auto my-5 max-w-fit text-center">
+        <div className="text-4xl lg:text-5xl">{time.time}</div>
+        <div className="lg:text-xl">{time.date}</div>
+      </div>
+    </div>
+  )
 }

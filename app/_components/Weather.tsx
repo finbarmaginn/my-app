@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import type { IWeatherData } from "../types";
 import toast from "react-hot-toast";
 import classNames from "classnames";
+import Image from "next/image";
+import { ApiError } from "next/dist/server/api-utils";
 
 type Props = {
   weatherData: IWeatherData
@@ -31,11 +33,14 @@ export default function Weather({ weatherData }: Props) {
         setWeather(weatherData)
         toast.success("Weather data updated")
       } catch (err) {
-        toast.error(JSON.stringify(err, null, 2))
+        if (err instanceof ApiError) {
+          toast.error(err.message);
+        } else {
+          toast.error(JSON.stringify(err, null, 2))
+        }
       } finally {
         setWeatherLoading(false);
       }
-
     }, 1000 * 60 * 60);
 
     return () => clearInterval(timer.current as NodeJS.Timeout);
@@ -47,23 +52,29 @@ export default function Weather({ weatherData }: Props) {
     setWeatherList([
       {
         name: "Temperature",
-        data: (<div className="grid grid-cols-2">
-          <div className="text-left">It Feels like </div>
-          <div className="text-xl text-right font-bold">{currentData.apparent_temperature}{currentUnits.apparent_temperature}</div>
-          <div>It&apos;s Actually</div>
-          <div className="text-xl text-right font-bold">{currentData.temperature_2m}{currentUnits.temperature_2m}</div>
-        </div>)
-      },
-      {
-        name: "Environmental",
-        data: (<div className="grid grid-cols-2">
-          <div className="text-left">Cloud Cover:</div>
-          <div className="text-xl text-right font-bold">{currentData.cloud_cover}{currentUnits.cloud_cover}</div>
-          <div className="text-left">Precipitation:</div>
-          <div className="text-xl text-right font-bold">{currentData.precipitation}{currentUnits.precipitation}</div>
-          <div className="text-left">Humidity:</div>
-          <div className="text-xl text-right font-bold">{currentData.relative_humidity_2m}{currentUnits.relative_humidity_2m}</div>
-        </div>)
+        data: (
+          <>
+            <div className="flex items-center gap-5">
+              <div className="grow">
+                <div className="text-3xl font-bold">{currentData.temperature_2m}{currentUnits.temperature_2m}</div>
+                <div>It Feels like <div className="text-xl font-bold">{currentData.apparent_temperature}{currentUnits.apparent_temperature}</div></div>
+              </div>
+              <div>
+                <Image
+                  src={getIconSrc(currentData.cloud_cover, currentData.rain, currentData.is_day)}
+                  alt=""
+                  width="50"
+                  height="50"
+                  className="w-40 h-auto"
+                  unoptimized
+                  priority
+                />
+              </div>
+              <div></div>
+            </div>
+            <div>Wind Speed: {currentData.wind_speed_10m}{currentUnits.wind_speed_10m}</div>
+          </>
+        )
       },
       {
         name: "Last Updated",
@@ -76,9 +87,16 @@ export default function Weather({ weatherData }: Props) {
 
 
   return (<>
+    {/* <div className="text-left">Cloud Cover:</div>
+          <div className="text-xl text-right font-bold">
+          </div>
+          <div className="text-left">Precipitation:</div>
+          <div className="text-xl text-right font-bold">{currentData.precipitation}{currentUnits.precipitation}</div>
+          <div className="text-left">Humidity:</div>
+          <div className="text-xl text-right font-bold">{currentData.relative_humidity_2m}{currentUnits.relative_humidity_2m}</div> */}
     <div className={classNames(
       weatherLoading || !weatherList && "blur-md animate-pulse",
-      "grid gap-5"
+      "flex flex-col gap-5 max-h-full"
     )}>
       {!weatherList ? (
         <>
@@ -94,18 +112,10 @@ export default function Weather({ weatherData }: Props) {
               Tqwe Lorem ipsum dolor sit amet consectetur
             </div>
           </div>
-          <div className="">
-            <div className="text-lg font-semibold">Tqwe</div>
-            <div>
-              Tqwe Lorem ipsum dolor sit amet consectetur
-            </div>
-          </div>
-
         </>
       ) : weatherList.map((w, i) => {
         return (
-          <div className="" key={i}>
-            <div className="text-lg font-semibold">{w.name}</div>
+          <div className={classNames(i + 1 === weatherList.length && "absolute bottom-5 right-0 left-0 text-center")} key={i}>
             <div>
               {w.data}
             </div>
@@ -114,4 +124,18 @@ export default function Weather({ weatherData }: Props) {
       })}
     </div >
   </>)
+}
+
+function getIconSrc(cover: number, rain: number, day: number) {
+  if (cover <= 33) {
+    return day === 1
+      ? "/svg/clear-day.svg"
+      : "/svg/clear-night.svg";
+  } else if (cover > 33 && cover <= 66) {
+    return day === 1
+      ? "/svg/partly-cloudy-day.svg"
+      : "/svg/partly-cloudy-night.svg";
+  } else {
+    return "/svg/cloudy.svg"
+  }
 }
