@@ -14,16 +14,17 @@ export default async function Home() {
 	return (
 		<div className="grid grid-cols-12">
 			<div className="col-span-12 md:col-span-3 px-5 bg-neutral-900 relative">
-				<Clock
-					dateTime={{
-						date: format(now, "eeee do LLLL"),
-						time: format(now, "p")
-					}}
-				/>
-
-				<Weather
-					weatherData={weatherData}
-				/>
+				<div className="max-w-[320px] mx-auto">
+					<Clock
+						dateTime={{
+							date: format(now, "eeee do LLLL"),
+							time: format(now, "p")
+						}}
+					/>
+					<Weather
+						weatherData={weatherData}
+					/>
+				</div>
 			</div>
 			<div className="col-span-12 md:col-span-9 flex flex-col items-center justify-items-center md:min-h-screen font-[family-name:var(--font-geist-sans)]">
 				<main className="max-w-screen-2xl w-11/12 my-6 md:my-auto">

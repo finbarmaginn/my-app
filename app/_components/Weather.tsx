@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import type { IWeatherData } from "../types";
 import toast from "react-hot-toast";
@@ -26,8 +25,8 @@ export default function Weather({ weatherData }: Props) {
 
   useEffect(() => {
     timer.current = setInterval(async () => {
-      setWeatherLoading(true);
       try {
+        setWeatherLoading(true);
         const weather = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.4396041266992&longitude=-2.590676881053259&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime');
         const weatherData = await weather.json() as IWeatherData;
         setWeather(weatherData)
@@ -41,7 +40,8 @@ export default function Weather({ weatherData }: Props) {
       } finally {
         setWeatherLoading(false);
       }
-    }, 1000 * 60 * 60);
+      // setInterval timer set for 30 minutes
+    }, 1000 * 60 * 30);
 
     return () => clearInterval(timer.current as NodeJS.Timeout);
   }, []);
@@ -54,7 +54,7 @@ export default function Weather({ weatherData }: Props) {
         name: "Temperature",
         data: (
           <>
-            <div className="flex items-center gap-5">
+            <div className="flex items-center justify-between gap-5">
               <div className="grow">
                 <div className="text-3xl font-bold">{currentData.temperature_2m}{currentUnits.temperature_2m}</div>
                 <div>It Feels like <div className="text-xl font-bold">{currentData.apparent_temperature}{currentUnits.apparent_temperature}</div></div>
@@ -65,64 +65,56 @@ export default function Weather({ weatherData }: Props) {
                   alt=""
                   width="50"
                   height="50"
-                  className="w-40 h-auto"
+                  className="w-40 h-auto -my-5 -mr-5"
                   unoptimized
                   priority
                 />
               </div>
-              <div></div>
             </div>
             <div>Wind Speed: {currentData.wind_speed_10m}{currentUnits.wind_speed_10m}</div>
           </>
         )
-      },
-      {
-        name: "Last Updated",
-        data: (<div className="text-center">
-          {format(Date.now(), "p")}
-        </div>)
-      },
+      }
     ])
   }, [weather])
 
 
   return (<>
-    {/* <div className="text-left">Cloud Cover:</div>
-          <div className="text-xl text-right font-bold">
-          </div>
-          <div className="text-left">Precipitation:</div>
-          <div className="text-xl text-right font-bold">{currentData.precipitation}{currentUnits.precipitation}</div>
-          <div className="text-left">Humidity:</div>
-          <div className="text-xl text-right font-bold">{currentData.relative_humidity_2m}{currentUnits.relative_humidity_2m}</div> */}
     <div className={classNames(
-      weatherLoading || !weatherList && "blur-md animate-pulse",
-      "flex flex-col gap-5 max-h-full"
+      (weatherLoading || !weatherList) && "blur-md animate-pulse",
+      "flex flex-col gap-5 my-10"
     )}>
       {!weatherList ? (
-        <>
-          <div className="">
-            <div className="text-lg font-semibold">Tqwe</div>
+        <div>
+          <div className="flex items-center justify-between gap-5">
+            <div className="grow">
+              <div className="text-3xl font-bold">19.9</div>
+              <div>It Feels like <div className="text-xl font-bold">19.9</div></div>
+            </div>
             <div>
-              Tqwe Lorem ipsum dolor sit amet consectetur
+              <Image
+                src={getIconSrc(50, 50, 1)}
+                alt=""
+                width="50"
+                height="50"
+                className="w-40 h-auto -my-5 -mr-5"
+                unoptimized
+                priority
+              />
             </div>
           </div>
-          <div className="">
-            <div className="text-lg font-semibold">Tqwe</div>
-            <div>
-              Tqwe Lorem ipsum dolor sit amet consectetur
-            </div>
-          </div>
-        </>
+          <div>Wind Speed: 12mgh</div>
+        </div>
       ) : weatherList.map((w, i) => {
         return (
-          <div className={classNames(i + 1 === weatherList.length && "absolute bottom-5 right-0 left-0 text-center")} key={i}>
+          <div key={i}>
             <div>
               {w.data}
             </div>
           </div>
         )
       })}
-    </div >
+    </div>
   </>)
 }
 

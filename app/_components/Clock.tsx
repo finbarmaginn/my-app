@@ -9,8 +9,8 @@ type DateTime = {
 }
 
 export default function Clock({ dateTime }: { dateTime: DateTime }) {
-	const timer = useRef<NodeJS.Timeout | null>(null);
-	const [time, setTime] = useState<DateTime>(dateTime);
+  const timer = useRef<NodeJS.Timeout | null>(null);
+  const [time, setTime] = useState<DateTime>(dateTime);
 
   useEffect(() => {
     timer.current = setInterval(() => {
