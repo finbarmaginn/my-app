@@ -3,6 +3,7 @@
 import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 import type { IWeatherData } from "../types";
+import toast from "react-hot-toast";
 
 type Props = {
   weatherData: IWeatherData
@@ -21,10 +22,16 @@ export default function Weather({ weatherData }: Props) {
 
   useEffect(() => {
     timer.current = setInterval(async () => {
-      const weather = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.4396041266992&longitude=-2.590676881053259&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime');
-      const weatherData = await weather.json() as IWeatherData;
-      setWeather(weatherData)
-    }, 10000);
+      try {
+        const weather = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.4396041266992&longitude=-2.590676881053259&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime');
+        const weatherData = await weather.json() as IWeatherData;
+        setWeather(weatherData)
+        toast.success("Weather data updated")
+      } catch (err) {
+        toast.error(JSON.stringify(err, null, 2))
+      }
+
+    }, 1000 * 60 * 60);
 
     return () => clearInterval(timer.current as NodeJS.Timeout);
   }, []);
