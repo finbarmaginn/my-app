@@ -1,91 +1,87 @@
-import { format } from "date-fns";
+"use client";
 
-type IDailtyData = {
-  time: string[],
-  weather_code: number[],
-  temperature_2m_max: number[],
-  temperature_2m_min: number[],
-  sunrise: string[],
-  sunset: string[],
-  daylight_duration: number[],
-  sunshine_duration: number[],
-  uv_index_max: number[],
-  uv_index_clear_sky_max: number[],
-  precipitation_sum: number[],
-  rain_sum: number[],
-  showers_sum: number[],
-  wind_speed_10m_max: number[]
-};
+import { format } from "date-fns";
+import { useEffect, useRef, useState } from "react";
+import type { IWeatherData } from "../types";
 
 type Props = {
-  weatherData: {
-    latitude: number,
-    longitude: number,
-    generationtime_ms: number,
-    utc_offset_seconds: number,
-    timezone: string,
-    timezone_abbreviation: string,
-    elevation: number,
-    daily_units: {
-      time: string,
-      weather_code: string,
-      temperature_2m_max: string,
-      temperature_2m_min: string,
-      sunrise: string,
-      sunset: string,
-      daylight_duration: string,
-      sunshine_duration: string,
-      uv_index_max: string,
-      uv_index_clear_sky_max: string,
-      precipitation_sum: string,
-      rain_sum: string,
-      showers_sum: string,
-      wind_speed_10m_max: string
-    },
-    daily: IDailtyData
-  }
+  weatherData: IWeatherData
 }
 
+type WeatherDataList = {
+  name: string,
+  data: string | React.ReactNode
+}[]
+
 export default function Weather({ weatherData }: Props) {
-  const dailyData = weatherData.daily;
-  const dailyUnits = weatherData.daily_units;
+
+  const [weather, setWeather] = useState<IWeatherData>(weatherData);
+  const [weatherList, setWeatherList] = useState<WeatherDataList | null>(null)
+  const timer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    timer.current = setInterval(async () => {
+      const weather = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.4396041266992&longitude=-2.590676881053259&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime');
+      const weatherData = await weather.json() as IWeatherData;
+      setWeather(weatherData)
+    }, 10000);
+
+    return () => clearInterval(timer.current as NodeJS.Timeout);
+  }, []);
+
+  useEffect(() => {
+    const currentData = weather.current;
+    const currentUnits = weather.current_units;
+    setWeatherList([
+      {
+        name: "Temperature",
+        data: (<div className="grid grid-cols-2">
+          <div className="text-left">It Feels like </div>
+          <div className="text-xl text-right font-bold">{currentData.apparent_temperature}{currentUnits.apparent_temperature}</div>
+          <div>It&apos;s Actually</div>
+          <div className="text-xl text-right font-bold">{currentData.temperature_2m}{currentUnits.temperature_2m}</div>
+        </div>)
+      },
+      {
+        name: "Environmental",
+        data: (<div className="grid grid-cols-2">
+          <div className="text-left">Cloud Cover:</div>
+          <div className="text-xl text-right font-bold">{currentData.cloud_cover}{currentUnits.cloud_cover}</div>
+          <div className="text-left">Precipitation:</div>
+          <div className="text-xl text-right font-bold">{currentData.precipitation}{currentUnits.precipitation}</div>
+          <div className="text-left">Humidity:</div>
+          <div className="text-xl text-right font-bold">{currentData.relative_humidity_2m}{currentUnits.relative_humidity_2m}</div>
+        </div>)
+      },
+      {
+        name: "Last Updated",
+        data: (<div className="text-center">
+          {format(Date.now(), "p")}
+        </div>)
+      },
+    ])
+  }, [weather])
+
+  if (!weatherList) {
+    return (<>
+      <div className="w-full h-[64px] md:h-[76px] bg-neutral-800 animate-pulse"></div>
+      <div className="w-full h-[64px] md:h-[76px] bg-neutral-800 animate-pulse"></div>
+      <div className="w-full h-[64px] md:h-[76px] bg-neutral-800 animate-pulse"></div>
+    </>)
+  }
 
   return (<>
     <div className="grid gap-5">
-
-      <div className="">
-        <div className="text-lg font-semibold">Temperature</div>
-        <div>
-          <div>Min {dailyData.temperature_2m_min}{dailyUnits.temperature_2m_min}</div>
-          <div>Max {dailyData.temperature_2m_max}{dailyUnits.temperature_2m_max}</div>
-        </div>
-      </div>
-
-      <div className="">
-        <div className="text-lg font-semibold">Precipitation</div>
-        <div>
-          <div>{dailyData.precipitation_sum}{dailyUnits.precipitation_sum}</div>
-        </div>
-      </div>
-
-      <div className="">
-        <div className="text-lg font-semibold">Sun Activity</div>
-        <div>
-          <div>Sunrise {format(dailyData.sunrise[0], "p")}</div>
-          <div>Sunset {format(dailyData.sunset[0], "p")}</div>
-        </div>
-      </div>
-
-      <div className="">
-        <div className="text-lg font-semibold">Wind Speed</div>
-        <div>
-          Min {dailyData.wind_speed_10m_max}{dailyUnits.wind_speed_10m_max}
-        </div>
-        <div>
-          Max {dailyData.wind_speed_10m_max}{dailyUnits.wind_speed_10m_max}
-        </div>
-      </div>
-
+      {weatherList.map((w, i) => {
+        return (
+          <div className="" key={i}>
+            <div className="text-lg font-semibold">{w.name}</div>
+            <div>
+              {w.data}
+            </div>
+          </div>
+        )
+      })}
     </div >
   </>)
 }

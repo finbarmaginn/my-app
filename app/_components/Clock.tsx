@@ -16,7 +16,7 @@ export default function Clock() {
       })
     }, 1000)
     return () => clearInterval(timer.current as NodeJS.Timeout);
-  }, [])
+  }, []);
 
   return (
     <div>
