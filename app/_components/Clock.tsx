@@ -23,7 +23,10 @@ export default function Clock() {
 
       <div className="mx-auto my-5 max-w-fit text-center">
         {!time ? (<>
-          <div className="w-48 h-[64px] md:h-[76px] bg-neutral-800 animate-pulse"></div>
+          <div className="blur-md animate-pulse">
+            <div className="lg:text-xl">asdfasdf 12th daedasg</div>
+            <div className="text-4xl lg:text-5xl">  2:00 PM</div>
+          </div>
         </>) : (<>
           <div className="lg:text-xl">{time.date}</div>
           <div className="text-4xl lg:text-5xl">{time.time}</div>
