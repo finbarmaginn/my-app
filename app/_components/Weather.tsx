@@ -41,7 +41,7 @@ export default function Weather({ weatherData }: Props) {
         setWeatherLoading(false);
       }
       // setInterval timer set for 30 minutes
-    }, 1000 * 60 * 30);
+    }, 1000 * 60 * 2);
 
     return () => clearInterval(timer.current as NodeJS.Timeout);
   }, []);
