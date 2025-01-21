@@ -1,5 +1,6 @@
 "use client";
 
+import classNames from "classnames";
 import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,12 +9,18 @@ type DateTime = {
   time: string
 }
 
-export default function Clock({ dateTime }: { dateTime: DateTime }) {
+export default function Clock() {
   const timer = useRef<NodeJS.Timeout | null>(null);
-  const [time, setTime] = useState<DateTime>(dateTime);
+  const [time, setTime] = useState<DateTime>({
+    date: "Skeleton !£th Somedate",
+    time: "S:KL TN"
+  });
+
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     timer.current = setInterval(() => {
+      setLoading(false);
       const now = Date.now()
       setTime({
         date: format(now, "eeee do LLLL"),
@@ -26,9 +33,9 @@ export default function Clock({ dateTime }: { dateTime: DateTime }) {
 
   return (
     <div>
-      <div className="mx-auto my-5 max-w-fit text-center">
-        <div className="text-4xl lg:text-5xl">{time.time}</div>
-        <div className="lg:text-xl">{time.date}</div>
+      <div className={classNames("mx-auto my-10 max-w-fit text-center", loading && "blur-md animate-pulse")}>
+        <div className="text-5xl">{time.time}</div>
+        <div className="text-xl">{time.date}</div>
       </div>
     </div>
   )

@@ -2,29 +2,19 @@ import Image from "next/image";
 import { services } from "./data";
 import Clock from "./_components/Clock";
 import Weather from "./_components/Weather";
-import { format } from "date-fns";
 
-export const revalidate = 1000;
-
-export default async function Home() {
-	const now = Date.now();
+export default function Home() {
 	return (
 		<div className="grid grid-cols-12">
 			<div className="col-span-12 md:col-span-3 px-5 bg-neutral-900 relative">
-				<div className="max-w-[320px] mx-auto">
-					<Clock
-						dateTime={{
-							date: format(now, "eeee do LLLL"),
-							time: format(now, "p")
-						}}
-					/>
+				<div className="md:max-w-[320px] mx-auto">
+					<Clock />
 					<Weather
-
 					/>
 				</div>
 			</div>
 			<div className="col-span-12 md:col-span-9 flex flex-col items-center justify-items-center md:min-h-screen font-[family-name:var(--font-geist-sans)]">
-				<main className="max-w-screen-2xl w-11/12 my-6 md:my-auto">
+				<main className="max-w-screen-2xl w-11/12 px-6 my-6 md:my-auto">
 					<div className="grid grid-cols-2 md:grid-cols-3 gap-12 lg:gap-24 items-center justify-center">
 						{services.map((service) => {
 							return (

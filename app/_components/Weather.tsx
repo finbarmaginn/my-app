@@ -28,7 +28,6 @@ export default function Weather({ }: Props) {
       setWeatherLoading(true);
       const weather = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.4396041266992&longitude=-2.590676881053259&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime');
       const weatherData = await weather.json() as IWeatherData;
-      toast.success("Weather data updated")
       return weatherData;
     } catch (err) {
       if (err instanceof ApiError) {
