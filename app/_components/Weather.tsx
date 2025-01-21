@@ -8,7 +8,7 @@ import Image from "next/image";
 import { ApiError } from "next/dist/server/api-utils";
 
 type Props = {
-  weatherData: IWeatherData
+  weatherData?: IWeatherData
 }
 
 type WeatherDataList = {
@@ -16,66 +16,82 @@ type WeatherDataList = {
   data: string | React.ReactNode
 }[]
 
-export default function Weather({ weatherData }: Props) {
+export default function Weather({ }: Props) {
 
-  const [weather, setWeather] = useState<IWeatherData>(weatherData);
+  const [weather, setWeather] = useState<IWeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherList, setWeatherList] = useState<WeatherDataList | null>(null)
   const timer = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    timer.current = setInterval(async () => {
-      try {
-        setWeatherLoading(true);
-        const weather = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.4396041266992&longitude=-2.590676881053259&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime');
-        const weatherData = await weather.json() as IWeatherData;
-        setWeather(weatherData)
-        toast.success("Weather data updated")
-      } catch (err) {
-        if (err instanceof ApiError) {
-          toast.error(err.message);
-        } else {
-          toast.error(JSON.stringify(err, null, 2))
-        }
-      } finally {
-        setWeatherLoading(false);
+  const getWeather = async () => {
+    try {
+      setWeatherLoading(true);
+      const weather = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.4396041266992&longitude=-2.590676881053259&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime');
+      const weatherData = await weather.json() as IWeatherData;
+      toast.success("Weather data updated")
+      return weatherData;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+      } else {
+        toast.error(JSON.stringify(err, null, 2))
       }
-      // setInterval timer set for 30 minutes
-    }, 1000 * 60 * 2);
+    } finally {
+      setWeatherLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      const weatherData = await getWeather();
+      if (weatherData) {
+        setWeather(weatherData);
+      }
+    })()
+    //   setWeather(weatherData);
+    timer.current = setInterval(async () => {
+      const weatherData = await getWeather();
+      if (weatherData) {
+        setWeather(weatherData)
+      }
+    }, 1000 * 60 * 15);
 
     return () => clearInterval(timer.current as NodeJS.Timeout);
   }, []);
 
   useEffect(() => {
-    const currentData = weather.current;
-    const currentUnits = weather.current_units;
-    setWeatherList([
-      {
-        name: "Temperature",
-        data: (
-          <>
-            <div className="flex items-center justify-between gap-5">
-              <div className="grow">
-                <div className="text-3xl font-bold">{currentData.temperature_2m}{currentUnits.temperature_2m}</div>
-                <div>It Feels like <div className="text-xl font-bold">{currentData.apparent_temperature}{currentUnits.apparent_temperature}</div></div>
+    if (weather) {
+
+      const currentData = weather.current;
+      const currentUnits = weather.current_units;
+      setWeatherList([
+        {
+          name: "Temperature",
+          data: (
+            <>
+              <div className="flex items-center justify-between gap-5">
+                <div className="grow">
+                  <div className="text-3xl font-bold">{currentData.temperature_2m}{currentUnits.temperature_2m}</div>
+                  <div>It Feels like <div className="text-xl font-bold">{currentData.apparent_temperature}{currentUnits.apparent_temperature}</div></div>
+                </div>
+                <div>
+                  <Image
+                    src={getIconSrc(currentData.cloud_cover, currentData.rain, currentData.is_day)}
+                    alt=""
+                    width="50"
+                    height="50"
+                    className="w-40 h-auto -my-5 -mr-5"
+                    unoptimized
+                    priority
+                  />
+                </div>
               </div>
-              <div>
-                <Image
-                  src={getIconSrc(currentData.cloud_cover, currentData.rain, currentData.is_day)}
-                  alt=""
-                  width="50"
-                  height="50"
-                  className="w-40 h-auto -my-5 -mr-5"
-                  unoptimized
-                  priority
-                />
-              </div>
-            </div>
-            <div>Wind Speed: {currentData.wind_speed_10m}{currentUnits.wind_speed_10m}</div>
-          </>
-        )
-      }
-    ])
+              <div>Wind Speed: {currentData.wind_speed_10m}{currentUnits.wind_speed_10m}</div>
+            </>
+          )
+        }
+      ])
+    }
   }, [weather])
 
 
