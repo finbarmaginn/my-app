@@ -35,4 +35,10 @@ export const services = [
 		img: "/yt-logo.png",
 		size: { w: 794, h: 150 }
 	},
+	{
+		name: "Catch The Chord",
+		url: "https://catch-the-chord.vercel.app",
+		img: "/catch-the-chord-logo.png",
+		size: { w: 600, h: 386 }
+	}
 ]
