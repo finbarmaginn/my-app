@@ -15,7 +15,10 @@ export default function TVServiceImage({ service }: {
   return (
     <>
       <Image
-        className={classNames(imgLoading && "blur-md animate-pulse")}
+        className={classNames(
+          imgLoading && "blur-md animate-pulse",
+          "mx-auto"
+        )}
         src={service.img}
         alt={service.name}
         width={service.size.w}

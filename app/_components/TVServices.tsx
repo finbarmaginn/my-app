@@ -10,7 +10,7 @@ export default function TVServices() {
           return (
             <a
               className={classNames(
-                "block transition-opacity duration-300 hover:opacity-40",
+                "transition-opacity duration-300 hover:opacity-40",
                 (i + 1 === services.length) && "md:col-start-2"
               )}
               href={service.url}
