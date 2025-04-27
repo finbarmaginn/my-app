@@ -36,9 +36,21 @@ export const services = [
 		size: { w: 794, h: 150 }
 	},
 	{
+		name: "ITVX",
+		url: "https://www.itv.com/",
+		img: "/itvxlogo.svg",
+		size: { w: 300, h: 150 }
+	},
+	{
 		name: "Catch The Chord",
 		url: "https://catch-the-chord.vercel.app",
 		img: "/catch-the-chord-logo.png",
 		size: { w: 600, h: 386 }
-	}
+	},
+	{
+		name: "SPOTIFY",
+		url: "https://www.spotify.com/",
+		img: "/Spotify_logo.svg",
+		size: { w: 300, h: 150 }
+	},
 ]
