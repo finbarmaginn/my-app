@@ -5,7 +5,7 @@ import TVServiceImage from "./TVServiceImage";
 export default function TVServices() {
 	return (
 		<>
-			<div className="grid grid-cols-2 md:grid-cols-3 gap-12 lg:gap-24 items-center justify-center">
+			<div className="grid grid-cols-2 md:grid-cols-3 gap-12 lg:gap-24 items-center justify-center my-4">
 				{services.map((service) => {
 					return (
 						<a
