@@ -8,8 +8,7 @@ export default function Home() {
 			<div className="col-span-12 md:col-span-3 px-5 bg-neutral-900 relative">
 				<div className="md:max-w-[320px] mx-auto">
 					<Clock />
-					<Weather
-					/>
+					<Weather />
 				</div>
 			</div>
 			<div className="col-span-12 md:col-span-9 flex flex-col items-center justify-items-center md:min-h-screen font-[family-name:var(--font-geist-sans)]">

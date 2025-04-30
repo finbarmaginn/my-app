@@ -50,7 +50,7 @@ export default function Weather({ }: Props) {
 				setWeather(weatherData);
 			}
 		})()
-		//   setWeather(weatherData);
+
 		timer.current = setInterval(async () => {
 			const weatherData = await getWeather();
 			if (weatherData) {
@@ -83,7 +83,7 @@ export default function Weather({ }: Props) {
 			<div
 				className={classNames(
 					(weatherLoading || !weatherList) && "blur-md animate-pulse",
-					"flex flex-col gap-5 my-10"
+					"flex flex-col gap-5 my-6 md:my-12"
 				)}
 			>
 				{!weatherList ? (
@@ -115,10 +115,10 @@ export default function Weather({ }: Props) {
 						<div key={i}>
 							<div className="flex items-center justify-between gap-5">
 								<div className="grow">
-									<div className="text-3xl font-bold">{w.temperature}</div>
-									<div>
+									<div className="text-2xl md:text-3xl font-bold">{w.temperature}</div>
+									<div className="text-base md:text-lg">
 										It Feels like{" "}
-										<div className="text-xl font-bold">{w.feelsLike}</div>
+										<div className="text-lg md:text-xl font-bold">{w.feelsLike}</div>
 									</div>
 								</div>
 								<div>
@@ -133,7 +133,9 @@ export default function Weather({ }: Props) {
 									/>
 								</div>
 							</div>
-							<div>Wind Speed: {w.windSpeed}</div>
+							<div className="text-base md:text-lg">
+								Wind Speed: {w.windSpeed}
+							</div>
 						</div>
 					))
 				)}
