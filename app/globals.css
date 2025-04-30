@@ -1,8 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-  :root {
+:root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
