@@ -8,7 +8,7 @@ export const services = [
   {
     name: "Amazon Prime",
     url: "https://www.amazon.co.uk/gp/video/storefront",
-    img: "/primevideo-logo.png",
+    img: "/primeVideo.svg",
     size: { w: 500, h: 296 },
   },
   {
