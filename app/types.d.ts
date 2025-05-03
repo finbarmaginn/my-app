@@ -49,3 +49,16 @@ export type IWeatherData = {
     sunset: number[];
   };
 };
+
+export type IWeatherCode = {
+  [key: string]: {
+    day: {
+      description: string;
+      image: string;
+    };
+    night: {
+      description: string;
+      image: string;
+    };
+  };
+};

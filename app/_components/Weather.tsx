@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import classNames from "classnames";
 import Image from "next/image";
 import { ApiError } from "next/dist/server/api-utils";
+import { weatherCodes } from "./data";
 
 type Props = {
   weatherData?: IWeatherData;
@@ -76,11 +77,13 @@ export default function Weather({}: Props) {
           temperature: `${currentData.temperature_2m}${currentUnits.temperature_2m}`,
           feelsLike: `${currentData.apparent_temperature}${currentUnits.apparent_temperature}`,
           windSpeed: `${currentData.wind_speed_10m}${currentUnits.wind_speed_10m}`,
-          iconSrc: getIconSrc(
-            currentData.cloud_cover,
-            currentData.rain,
-            currentData.is_day,
-          ),
+          iconSrc: currentData.is_day
+            ? weatherCodes[
+                `${currentData.weather_code}` as keyof typeof weatherCodes
+              ].day.image
+            : weatherCodes[
+                `${currentData.weather_code}` as keyof typeof weatherCodes
+              ].night.image,
         },
       ]);
     }
@@ -105,7 +108,7 @@ export default function Weather({}: Props) {
               </div>
               <div>
                 <Image
-                  src={getIconSrc(50, 50, 1)}
+                  src={weatherCodes["0"].day.image}
                   alt=""
                   width="50"
                   height="50"
@@ -155,14 +158,14 @@ export default function Weather({}: Props) {
   );
 }
 
-function getIconSrc(cover: number, rain: number, day: number) {
-  if (cover <= 33) {
-    return day === 1 ? "/svg/clear-day.svg" : "/svg/clear-night.svg";
-  } else if (cover > 33 && cover <= 66) {
-    return day === 1
-      ? "/svg/partly-cloudy-day.svg"
-      : "/svg/partly-cloudy-night.svg";
-  } else {
-    return "/svg/cloudy.svg";
-  }
-}
+// function getIconSrc(cover: number, rain: number, day: number) {
+//   if (cover <= 33) {
+//     return day === 1 ? "/svg/clear-day.svg" : "/svg/clear-night.svg";
+//   } else if (cover > 33 && cover <= 66) {
+//     return day === 1
+//       ? "/svg/partly-cloudy-day.svg"
+//       : "/svg/partly-cloudy-night.svg";
+//   } else {
+//     return "/svg/cloudy.svg";
+//   }
+// }
