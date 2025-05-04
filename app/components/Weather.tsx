@@ -7,17 +7,25 @@ import classNames from "classnames";
 import Image from "next/image";
 import { ApiError } from "next/dist/server/api-utils";
 import { weatherCodes } from "./data";
+import { MyLineChart } from "./dataVis/MyLineChart";
 
 type Props = {
   weatherData?: IWeatherData;
 };
 
-type WeatherDataList = {
-  name: string;
+export type WeatherDataList = {
   temperature: string;
+  daily: WeatherDataListDaily;
   feelsLike: string;
   windSpeed: string;
   iconSrc: string;
+}[];
+
+export type WeatherDataListDaily = {
+  temperature: string;
+  precipitation: number;
+  weatherCode: number;
+  time: number;
 }[];
 
 export default function Weather({}: Props) {
@@ -30,7 +38,7 @@ export default function Weather({}: Props) {
     try {
       setWeatherLoading(true);
       const weather = await fetch(
-        "https://api.open-meteo.com/v1/forecast?latitude=51.439372&longitude=-2.586256&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=sunrise,sunset&wind_speed_unit=mph&timeformat=unixtime",
+        "https://api.open-meteo.com/v1/forecast?latitude=51.439372&longitude=-2.586256&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,precipitation_probability_max&wind_speed_unit=mph&timeformat=unixtime",
       );
       const weatherData = (await weather.json()) as IWeatherData;
       return weatherData;
@@ -73,17 +81,16 @@ export default function Weather({}: Props) {
 
       setWeatherList([
         {
-          name: "Temperature",
+          daily: weather.daily.time.map((time, i) => ({
+            temperature: `${weather.daily.temperature_2m_max[i]}${weather.daily_units.temperature_2m_max}`,
+            precipitation: weather.daily.precipitation_probability_max[i],
+            weatherCode: weather.daily.weather_code[i],
+            time: time,
+          })),
           temperature: `${currentData.temperature_2m}${currentUnits.temperature_2m}`,
           feelsLike: `${currentData.apparent_temperature}${currentUnits.apparent_temperature}`,
           windSpeed: `${currentData.wind_speed_10m}${currentUnits.wind_speed_10m}`,
-          iconSrc: currentData.is_day
-            ? weatherCodes[
-                `${currentData.weather_code}` as keyof typeof weatherCodes
-              ].day.image
-            : weatherCodes[
-                `${currentData.weather_code}` as keyof typeof weatherCodes
-              ].night.image,
+          iconSrc: getIconSrc(currentData.is_day, currentData.weather_code),
         },
       ]);
     }
@@ -112,7 +119,7 @@ export default function Weather({}: Props) {
                   alt=""
                   width="50"
                   height="50"
-                  className="-my-5 -mr-5 h-auto w-40"
+                  className="h-auto w-40"
                   unoptimized
                   priority
                 />
@@ -141,7 +148,7 @@ export default function Weather({}: Props) {
                     alt=""
                     width="50"
                     height="50"
-                    className="-my-5 -mr-5 h-auto w-40"
+                    className="h-auto w-40"
                     unoptimized
                     priority
                   />
@@ -149,6 +156,12 @@ export default function Weather({}: Props) {
               </div>
               <div className="text-base md:text-lg">
                 Wind Speed: {w.windSpeed}
+              </div>
+              <div className="text-base md:text-lg">
+                Precipitation:
+                <div className="my-3">
+                  <MyLineChart data={w.daily} />
+                </div>
               </div>
             </div>
           ))
@@ -158,14 +171,12 @@ export default function Weather({}: Props) {
   );
 }
 
-// function getIconSrc(cover: number, rain: number, day: number) {
-//   if (cover <= 33) {
-//     return day === 1 ? "/svg/clear-day.svg" : "/svg/clear-night.svg";
-//   } else if (cover > 33 && cover <= 66) {
-//     return day === 1
-//       ? "/svg/partly-cloudy-day.svg"
-//       : "/svg/partly-cloudy-night.svg";
-//   } else {
-//     return "/svg/cloudy.svg";
-//   }
-// }
+export function getIconSrc(is_day: number, weather_code: number) {
+  if (is_day) {
+    return weatherCodes[`${weather_code}` as keyof typeof weatherCodes].day
+      .image;
+  } else {
+    return weatherCodes[`${weather_code}` as keyof typeof weatherCodes].night
+      .image;
+  }
+}

@@ -1,7 +1,6 @@
 import Clock from "./components/Clock";
 import Weather from "./components/Weather";
 import TVServices from "./components/TVServices";
-// import MyBarChart from "./components/dataVis/MyBarChart";
 
 export default function Home() {
   return (
@@ -10,7 +9,6 @@ export default function Home() {
         <div className="mx-auto md:max-w-[320px]">
           <Clock />
           <Weather />
-          {/* <MyBarChart /> */}
         </div>
       </div>
       <div className="col-span-12 flex flex-col items-center justify-items-center font-[family-name:var(--font-geist-sans)] md:col-span-9 md:min-h-screen">

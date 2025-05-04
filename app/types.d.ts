@@ -36,17 +36,19 @@ export type IWeatherData = {
     weather_code: number;
     cloud_cover: number;
     wind_speed_10m: number;
-    wind_direction_10m: number7;
+    wind_direction_10m: number;
   };
   daily_units: {
+    precipitation_probability_max: string;
+    temperature_2m_max: string;
     time: string;
-    sunrise: string;
-    sunset: string;
+    weather_code: string;
   };
   daily: {
+    precipitation_probability_max: number[];
+    temperature_2m_max: number[];
     time: number[];
-    sunrise: number[];
-    sunset: number[];
+    weather_code: number[];
   };
 };
 
