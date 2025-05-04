@@ -345,5 +345,5 @@ export const packageVersions = {
   react: pjson.dependencies["react"],
   tailwind: pjson.dependencies["@tailwindcss/postcss"],
   recharts: pjson.dependencies["recharts"],
-  levaraging: "open-meteo, shadcn-ui, nextjs app-router / SSR",
+  levaraging: "open-meteo, shadcn-ui, app-router & SSR",
 };

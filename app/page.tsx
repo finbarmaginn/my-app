@@ -18,7 +18,7 @@ export default function Home() {
           <Weather />
           <div className="mt-auto mb-6">
             {Object.keys(typedPackageVersions).map((pkg, i) => (
-              <div key={i} className="text-right text-sm text-neutral-500">
+              <div key={i} className="text-right text-sm text-neutral-300">
                 {pkg}: {typedPackageVersions[pkg]}
               </div>
             ))}
