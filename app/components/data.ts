@@ -1,3 +1,5 @@
+import pjson from "../../package.json" assert { type: "json" };
+
 export const services = [
   {
     name: "Netflix",
@@ -336,4 +338,12 @@ export const weatherCodes = {
       image: "https://openweathermap.org/img/wn/11n@4x.png",
     },
   },
+};
+
+export const packageVersions = {
+  next: pjson.dependencies["next"],
+  react: pjson.dependencies["react"],
+  tailwind: pjson.dependencies["@tailwindcss/postcss"],
+  recharts: pjson.dependencies["recharts"],
+  levaraging: "open-meteo, shadcn-ui, nextjs app-router / SSR",
 };

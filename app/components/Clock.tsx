@@ -35,7 +35,7 @@ export default function Clock() {
     <div>
       <div
         className={classNames(
-          "mx-auto my-6 max-w-fit text-center md:my-12",
+          "mx-auto max-w-fit text-center md:my-6",
           loading && "animate-pulse blur-md",
         )}
       >

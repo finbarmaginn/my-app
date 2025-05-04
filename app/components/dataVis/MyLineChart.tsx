@@ -42,7 +42,7 @@ const chartConfig = {
   // },
 } satisfies ChartConfig;
 type Props = {
-  data: WeatherDataListDaily;
+  data?: WeatherDataListDaily;
 };
 
 export function MyLineChart({ data: chartData }: Props) {

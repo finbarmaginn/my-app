@@ -101,7 +101,7 @@ export default function Weather({}: Props) {
       <div
         className={classNames(
           (weatherLoading || !weatherList) && "animate-pulse blur-md",
-          "my-6 flex flex-col gap-5 md:my-12",
+          "flex flex-col gap-5",
         )}
       >
         {!weatherList ? (
@@ -126,6 +126,33 @@ export default function Weather({}: Props) {
               </div>
             </div>
             <div>Wind Speed: 12mgh</div>
+            <div className="hidden text-base md:block md:text-lg">
+              Precipitation:
+              <div className="my-3">
+                <MyLineChart
+                  data={[
+                    {
+                      temperature: "",
+                      precipitation: 0,
+                      weatherCode: 0,
+                      time: 123412341,
+                    },
+                    {
+                      temperature: "",
+                      precipitation: 0,
+                      weatherCode: 0,
+                      time: 12342134234,
+                    },
+                    {
+                      temperature: "",
+                      precipitation: 0,
+                      weatherCode: 0,
+                      time: 12341234234,
+                    },
+                  ]}
+                />
+              </div>
+            </div>
           </div>
         ) : (
           weatherList.map((w, i) => (
@@ -157,7 +184,7 @@ export default function Weather({}: Props) {
               <div className="text-base md:text-lg">
                 Wind Speed: {w.windSpeed}
               </div>
-              <div className="text-base md:text-lg">
+              <div className="hidden text-base md:block md:text-lg">
                 Precipitation:
                 <div className="my-3">
                   <MyLineChart data={w.daily} />
