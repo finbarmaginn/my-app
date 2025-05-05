@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { IWeatherData } from "../types";
 import toast from "react-hot-toast";
 import classNames from "classnames";
@@ -35,7 +35,6 @@ export default function Weather({}: Props) {
   const [weatherList, setWeatherList] = useState<WeatherDataList | null>(null);
   const {
     data: weather,
-    error,
     isLoading: weatherLoading,
     isValidating: weatherValidating,
   } = useSWR<IWeatherData>(
