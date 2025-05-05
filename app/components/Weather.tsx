@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { IWeatherData } from "../types";
 import toast from "react-hot-toast";
 import classNames from "classnames";
 import Image from "next/image";
 import { ApiError } from "next/dist/server/api-utils";
 import { weatherCodes } from "./data";
-import { MyLineChart } from "./dataVis/MyLineChart";
 import useSWR from "swr";
+import { format } from "date-fns";
 
 type Props = {
   weatherData?: IWeatherData;
@@ -89,14 +89,15 @@ export default function Weather({}: Props) {
       >
         {!weatherList ? (
           <div>
-            <div className="flex items-center justify-between gap-5">
+            <div className="hidden items-center justify-between gap-5 md:flex">
               <div className="grow">
                 <div className="text-3xl font-bold">19.9</div>
                 <div>
                   It Feels like <div className="text-xl font-bold">19.9</div>
+                  <div>Wind Speed: 12mgh</div>
                 </div>
               </div>
-              <div>
+              <div className="rounded bg-neutral-400 p-3">
                 <Image
                   src={weatherCodes["0"].day.image}
                   alt=""
@@ -108,39 +109,12 @@ export default function Weather({}: Props) {
                 />
               </div>
             </div>
-            <div>Wind Speed: 12mgh</div>
-            <div className="hidden text-base md:block md:text-lg">
-              Precipitation:
-              <div className="my-3">
-                <MyLineChart
-                  data={[
-                    {
-                      temperature: "",
-                      precipitation: 0,
-                      weatherCode: 0,
-                      time: 123412341,
-                    },
-                    {
-                      temperature: "",
-                      precipitation: 0,
-                      weatherCode: 0,
-                      time: 12342134234,
-                    },
-                    {
-                      temperature: "",
-                      precipitation: 0,
-                      weatherCode: 0,
-                      time: 12341234234,
-                    },
-                  ]}
-                />
-              </div>
-            </div>
+            <div className="my-3 flex min-h-[176px] items-center justify-between rounded bg-neutral-400 p-3 text-neutral-900"></div>
           </div>
         ) : (
           weatherList.map((w, i) => (
             <div key={i}>
-              <div className="flex items-center justify-between gap-5">
+              <div className="hidden items-center justify-between gap-5 md:flex">
                 <div className="grow">
                   <div className="text-2xl font-bold md:text-3xl">
                     {w.temperature}
@@ -151,8 +125,9 @@ export default function Weather({}: Props) {
                       {w.feelsLike}
                     </div>
                   </div>
+                  Wind Speed: {w.windSpeed}
                 </div>
-                <div>
+                <div className="rounded bg-neutral-400 p-3">
                   <Image
                     src={w.iconSrc}
                     alt=""
@@ -164,13 +139,32 @@ export default function Weather({}: Props) {
                   />
                 </div>
               </div>
-              <div className="text-base md:text-lg">
-                Wind Speed: {w.windSpeed}
-              </div>
-              <div className="hidden text-base md:block md:text-lg">
-                Precipitation:
-                <div className="my-3">
+              <div className="text-base md:text-lg"></div>
+              {/* <div className="my-3">
                   <MyLineChart data={w.daily} />
+                </div> */}
+              <div className="my-3 rounded bg-neutral-400 p-3 text-neutral-900">
+                <div className="mb-2 font-bold">7-Day Forecast</div>
+                <div className="grid grid-cols-7 items-center justify-between">
+                  {w.daily.map((day, i) => (
+                    <React.Fragment key={i}>
+                      <div key={i} className="flex flex-col items-center gap-2">
+                        <div className="text-sm font-bold">
+                          {format(new Date(day.time * 1000), "E")}
+                        </div>
+                        <Image
+                          src={getIconSrc(1, day.weatherCode)}
+                          alt=""
+                          width="50"
+                          height="50"
+                          className="-m-3 h-auto w-15"
+                          unoptimized
+                        />
+                        <div className="text-sm">{day.temperature}</div>
+                        <div className="text-sm">{day.precipitation}%</div>
+                      </div>
+                    </React.Fragment>
+                  ))}
                 </div>
               </div>
             </div>

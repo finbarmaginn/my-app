@@ -35,12 +35,12 @@ export default function Clock() {
     <div>
       <div
         className={classNames(
-          "mx-auto max-w-fit text-center md:my-6",
+          "m-0 my-3 flex w-full items-center justify-between text-center md:mx-auto md:my-6 md:block md:max-w-fit md:justify-start md:text-left",
           loading && "animate-pulse blur-md",
         )}
       >
-        <div className="text-4xl md:text-5xl">{time.time}</div>
-        <div className="text-lg md:text-xl">{time.date}</div>
+        <div className="text-4xl lg:text-5xl">{time.time}</div>
+        <div className="text-lg lg:text-xl">{time.date}</div>
       </div>
     </div>
   );
