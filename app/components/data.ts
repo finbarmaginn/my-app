@@ -344,7 +344,6 @@ export const packageVersions = {
   next: pjson.dependencies["next"],
   react: pjson.dependencies["react"],
   tailwind: pjson.dependencies["@tailwindcss/postcss"],
-  // recharts: pjson.dependencies["recharts"],
   swr: pjson.dependencies["swr"],
-  levaraging: "open-meteo, app-router & SSR",
+  leveraging: "open-meteo",
 };
