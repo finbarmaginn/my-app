@@ -16,11 +16,11 @@ export default function Home() {
         <div className="mx-auto flex h-full flex-col md:max-w-[320px]">
           <Clock />
           <Weather />
-          <div className="mt-auto mb-6">
+          <div className="mt-auto mb-6 text-center">
             {Object.keys(typedPackageVersions).map((pkg, i) => (
-              <div key={i} className="text-right text-sm text-neutral-300">
-                {pkg}: {typedPackageVersions[pkg]}
-              </div>
+              <span key={i} className="text-xs text-neutral-300">
+                {pkg}: {typedPackageVersions[pkg]}{" "}
+              </span>
             ))}
           </div>
         </div>
