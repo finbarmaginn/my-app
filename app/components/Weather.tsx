@@ -8,6 +8,7 @@ import Image from "next/image";
 import { ApiError } from "next/dist/server/api-utils";
 import { weatherCodes } from "./data";
 import { MyLineChart } from "./dataVis/MyLineChart";
+import useSWR from "swr";
 
 type Props = {
   weatherData?: IWeatherData;
@@ -28,51 +29,33 @@ export type WeatherDataListDaily = {
   time: number;
 }[];
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function Weather({}: Props) {
-  const [weather, setWeather] = useState<IWeatherData | null>(null);
-  const [weatherLoading, setWeatherLoading] = useState(false);
   const [weatherList, setWeatherList] = useState<WeatherDataList | null>(null);
-  const timer = useRef<NodeJS.Timeout | null>(null);
-
-  const getWeather = async () => {
-    try {
-      setWeatherLoading(true);
-      const weather = await fetch(
-        "https://api.open-meteo.com/v1/forecast?latitude=51.439372&longitude=-2.586256&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,precipitation_probability_max&wind_speed_unit=mph&timeformat=unixtime",
-      );
-      const weatherData = (await weather.json()) as IWeatherData;
-      return weatherData;
-    } catch (err) {
-      if (err instanceof ApiError) {
-        toast.error(err.message);
-      } else {
-        toast.error(JSON.stringify(err, null, 2));
-      }
-    } finally {
-      setWeatherLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      const weatherData = await getWeather();
-      if (weatherData) {
-        setWeather(weatherData);
-      }
-    })();
-
-    timer.current = setInterval(
-      async () => {
-        const weatherData = await getWeather();
-        if (weatherData) {
-          setWeather(weatherData);
+  const {
+    data: weather,
+    error,
+    isLoading: weatherLoading,
+    isValidating: weatherValidating,
+  } = useSWR<IWeatherData>(
+    "https://api.open-meteo.com/v1/forecast?latitude=51.439372&longitude=-2.586256&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,precipitation_probability_max&wind_speed_unit=mph&timeformat=unixtime",
+    fetcher,
+    {
+      revalidateOnFocus: true,
+      refreshInterval: 1000 * 60 * 15,
+      refreshWhenHidden: false,
+      onError: (err: ApiError) => {
+        if (err.statusCode === 404) {
+          toast.error("Weather data not found");
+        } else if (err.statusCode === 500) {
+          toast.error("Server error, please try again later");
+        } else {
+          toast.error("An unexpected error occurred");
         }
       },
-      1000 * 60 * 15,
-    );
-
-    return () => clearInterval(timer.current as NodeJS.Timeout);
-  }, []);
+    },
+  );
 
   useEffect(() => {
     if (weather) {
@@ -100,7 +83,8 @@ export default function Weather({}: Props) {
     <>
       <div
         className={classNames(
-          (weatherLoading || !weatherList) && "animate-pulse blur-md",
+          (weatherLoading || weatherValidating || !weatherList) &&
+            "animate-pulse blur-md",
           "flex flex-col gap-5",
         )}
       >
