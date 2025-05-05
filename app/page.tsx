@@ -8,8 +8,6 @@ type PackageVersions = {
 };
 export default function Home() {
   const typedPackageVersions: PackageVersions = packageVersions;
-
-  console.log(typedPackageVersions);
   return (
     <div className="grid grid-cols-12">
       <div className="relative col-span-12 bg-neutral-900 px-5 md:col-span-3">
