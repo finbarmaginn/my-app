@@ -9,18 +9,21 @@ import { ApiError } from "next/dist/server/api-utils";
 import { weatherCodes } from "./data";
 import useSWR from "swr";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 type Props = {
   weatherData?: IWeatherData;
 };
 
-export type WeatherDataList = {
+export type WeatherData = {
   temperature: string;
   daily: WeatherDataListDaily;
   feelsLike: string;
   windSpeed: string;
   iconSrc: string;
-}[];
+};
+
+export type WeatherDataList = WeatherData[];
 
 export type WeatherDataListDaily = {
   temperature: string;
@@ -78,95 +81,83 @@ export default function Weather({}: Props) {
     }
   }, [weather]);
 
+  function WeatherMarkup({ weather }: { weather: WeatherData | null }) {
+    return (
+      <>
+        <div className="hidden items-center justify-between gap-5 md:flex">
+          <div className="grow">
+            <div className="text-2xl font-bold md:text-3xl">
+              {weather ? weather.temperature : "11°C"}
+            </div>
+            <div className="text-base md:text-lg">
+              It Feels like{" "}
+              <div className="text-lg font-bold md:text-xl">
+                {weather ? weather.feelsLike : "11°C"}
+              </div>
+            </div>
+            Wind Speed: {weather ? weather.windSpeed : "5 mph"}
+          </div>
+          <div className="rounded bg-neutral-400 p-3">
+            <Image
+              src={weather ? weather.iconSrc : weatherCodes["0"].day.image}
+              alt=""
+              width="50"
+              height="50"
+              className={cn(
+                "h-auto w-40 object-center",
+                !weather && "opacity-50",
+              )}
+              unoptimized
+              priority
+            />
+          </div>
+        </div>
+
+        <div className="my-3 min-h-40 rounded bg-neutral-400 p-3 text-neutral-900 md:min-h-44">
+          <div className="mb-2 font-bold">7-Day Forecast</div>
+          <div className="grid grid-cols-7 items-center justify-between">
+            {weather?.daily.map((day, i) => (
+              <React.Fragment key={i}>
+                <div key={i} className="flex flex-col items-center gap-2">
+                  <div className="text-sm font-bold">
+                    {format(new Date(day.time * 1000), "E")}
+                  </div>
+                  <Image
+                    src={getIconSrc(1, day.weatherCode)}
+                    alt=""
+                    width="50"
+                    height="50"
+                    className="-m-3 h-auto w-15"
+                    unoptimized
+                  />
+                  <div className="text-sm">{day.temperature}</div>
+                  <div className="text-sm">{day.precipitation}%</div>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <div
         className={classNames(
           (weatherLoading || weatherValidating || !weatherList) &&
-            "animate-pulse blur-md",
+            "animate-pulse blur",
           "flex flex-col gap-5",
         )}
       >
         {!weatherList ? (
           <div>
-            <div className="hidden items-center justify-between gap-5 md:flex">
-              <div className="grow">
-                <div className="text-3xl font-bold">19.9</div>
-                <div>
-                  It Feels like <div className="text-xl font-bold">19.9</div>
-                  <div>Wind Speed: 12mgh</div>
-                </div>
-              </div>
-              <div className="rounded bg-neutral-400 p-3">
-                <Image
-                  src={weatherCodes["0"].day.image}
-                  alt=""
-                  width="50"
-                  height="50"
-                  className="h-auto w-40"
-                  unoptimized
-                  priority
-                />
-              </div>
-            </div>
-            <div className="my-3 flex min-h-[176px] items-center justify-between rounded bg-neutral-400 p-3 text-neutral-900"></div>
+            <WeatherMarkup weather={weatherList} />
           </div>
         ) : (
           weatherList.map((w, i) => (
             <div key={i}>
-              <div className="hidden items-center justify-between gap-5 md:flex">
-                <div className="grow">
-                  <div className="text-2xl font-bold md:text-3xl">
-                    {w.temperature}
-                  </div>
-                  <div className="text-base md:text-lg">
-                    It Feels like{" "}
-                    <div className="text-lg font-bold md:text-xl">
-                      {w.feelsLike}
-                    </div>
-                  </div>
-                  Wind Speed: {w.windSpeed}
-                </div>
-                <div className="rounded bg-neutral-400 p-3">
-                  <Image
-                    src={w.iconSrc}
-                    alt=""
-                    width="50"
-                    height="50"
-                    className="h-auto w-40"
-                    unoptimized
-                    priority
-                  />
-                </div>
-              </div>
-              <div className="text-base md:text-lg"></div>
-              {/* <div className="my-3">
-                  <MyLineChart data={w.daily} />
-                </div> */}
-              <div className="my-3 rounded bg-neutral-400 p-3 text-neutral-900">
-                <div className="mb-2 font-bold">7-Day Forecast</div>
-                <div className="grid grid-cols-7 items-center justify-between">
-                  {w.daily.map((day, i) => (
-                    <React.Fragment key={i}>
-                      <div key={i} className="flex flex-col items-center gap-2">
-                        <div className="text-sm font-bold">
-                          {format(new Date(day.time * 1000), "E")}
-                        </div>
-                        <Image
-                          src={getIconSrc(1, day.weatherCode)}
-                          alt=""
-                          width="50"
-                          height="50"
-                          className="-m-3 h-auto w-15"
-                          unoptimized
-                        />
-                        <div className="text-sm">{day.temperature}</div>
-                        <div className="text-sm">{day.precipitation}%</div>
-                      </div>
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
+              <WeatherMarkup weather={w} />
             </div>
           ))
         )}
