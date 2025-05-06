@@ -16,8 +16,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { WeatherDataListDaily } from "../Weather";
 import { format } from "date-fns/format";
+import { WeatherDataListDaily } from "@/app/types";
 // const chartData = [
 //   { month: "January", desktop: 186 },
 //   { month: "February", desktop: 305 },

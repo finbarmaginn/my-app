@@ -15,8 +15,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { WeatherDataListDaily } from "../Weather";
 import { format } from "date-fns";
+import { WeatherDataListDaily } from "@/app/types";
 
 const chartConfig = {
   time: {

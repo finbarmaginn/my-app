@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import type { IWeatherData } from "../types";
+import type { IWeatherData, WeatherData, WeatherDataList } from "../types";
 import toast from "react-hot-toast";
 import classNames from "classnames";
 import Image from "next/image";
@@ -10,27 +10,11 @@ import { weatherCodes } from "./data";
 import useSWR from "swr";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 type Props = {
   weatherData?: IWeatherData;
 };
-
-export type WeatherData = {
-  temperature: string;
-  daily: WeatherDataListDaily;
-  feelsLike: string;
-  windSpeed: string;
-  iconSrc: string;
-};
-
-export type WeatherDataList = WeatherData[];
-
-export type WeatherDataListDaily = {
-  temperature: string;
-  precipitation: number;
-  weatherCode: number;
-  time: number;
-}[];
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -97,7 +81,9 @@ export default function Weather({}: Props) {
             </div>
             Wind Speed: {weather ? weather.windSpeed : "5 mph"}
           </div>
-          <div className="rounded bg-neutral-400 p-3">
+
+          {/* <div className="rounded bg-neutral-400 p-3"> */}
+          <Card className="p-0">
             <Image
               src={weather ? weather.iconSrc : weatherCodes["0"].day.image}
               alt=""
@@ -110,12 +96,15 @@ export default function Weather({}: Props) {
               unoptimized
               priority
             />
-          </div>
+            {/* </div> */}
+          </Card>
         </div>
-
-        <div className="my-3 min-h-40 rounded bg-neutral-400 p-3 text-neutral-900 md:min-h-44">
-          <div className="mb-2 font-bold">7-Day Forecast</div>
-          <div className="grid grid-cols-7 items-center justify-between">
+        {/* <div className="my-3 min-h-40 rounded bg-neutral-400 p-3 text-neutral-900 md:min-h-44"> */}
+        {/* <div className="mb-2 font-bold">7-Day Forecast</div> */}
+        {/* <div className="grid grid-cols-7 items-center justify-between"> */}
+        <Card className="mt-3">
+          <CardHeader>7-Day Forecast</CardHeader>
+          <CardContent className="grid grid-cols-7 items-center justify-between">
             {weather?.daily.map((day, i) => (
               <React.Fragment key={i}>
                 <div key={i} className="flex flex-col items-center gap-2">
@@ -135,8 +124,10 @@ export default function Weather({}: Props) {
                 </div>
               </React.Fragment>
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+        {/* </div> */}
+        {/* </div> */}
       </>
     );
   }

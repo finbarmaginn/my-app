@@ -71,3 +71,20 @@ export type IWeatherAPIError = {
   error: boolean;
   reason: string;
 };
+
+export type WeatherDataListDaily = {
+  temperature: string;
+  precipitation: number;
+  weatherCode: number;
+  time: number;
+}[];
+
+export type WeatherData = {
+  temperature: string;
+  daily: WeatherDataListDaily;
+  feelsLike: string;
+  windSpeed: string;
+  iconSrc: string;
+};
+
+export type WeatherDataList = WeatherData[];

@@ -1,23 +1,29 @@
 import classNames from "classnames";
 import { services } from "./data";
 import TVServiceImage from "./TVServiceImage";
+import { Card } from "@/components/ui/card";
 
 export default function TVServices() {
   return (
     <>
-      <div className="my-4 grid grid-cols-2 items-center justify-center gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-24">
+      <div className="my-4 grid grid-cols-2 items-center justify-center gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
         {services.map((service) => {
           return (
-            <a
-              className={classNames(
-                "transition-opacity duration-300 hover:opacity-40",
-              )}
-              href={service.url}
+            <Card
+              className="flex h-full w-full items-center justify-center p-12"
               key={service.name}
-              target="_blank"
             >
-              <TVServiceImage service={service} />
-            </a>
+              <a
+                className={classNames(
+                  "transition-opacity duration-300 hover:opacity-40",
+                )}
+                href={service.url}
+                key={service.name}
+                target="_blank"
+              >
+                <TVServiceImage service={service} />
+              </a>
+            </Card>
           );
         })}
       </div>
