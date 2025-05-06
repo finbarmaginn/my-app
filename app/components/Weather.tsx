@@ -70,7 +70,7 @@ export default function Weather({}: Props) {
       <>
         <div className="hidden md:block">
           <Card>
-            <CardContent className="flex items-center justify-around gap-6">
+            <CardContent className="flex items-center gap-6">
               <div className="!justify-self-start">
                 <div className="text-2xl font-bold md:text-3xl">
                   {weather ? weather.temperature : "11°C"}
@@ -89,7 +89,7 @@ export default function Weather({}: Props) {
                 width="50"
                 height="50"
                 className={cn(
-                  "h-auto w-40 object-center",
+                  "mx-auto h-auto w-40 object-center",
                   !weather && "opacity-50",
                 )}
                 unoptimized
