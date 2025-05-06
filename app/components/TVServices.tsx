@@ -6,11 +6,11 @@ import { Card } from "@/components/ui/card";
 export default function TVServices() {
   return (
     <>
-      <div className="my-4 grid grid-cols-2 items-center justify-center gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
+      <div className="grid grid-cols-2 items-center justify-center gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-12">
         {services.map((service) => {
           return (
             <Card
-              className="flex h-full w-full items-center justify-center p-12"
+              className="flex h-full w-full items-center justify-center p-6 md:p-12"
               key={service.name}
             >
               <a

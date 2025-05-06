@@ -35,7 +35,7 @@ export default function Clock() {
     <div>
       <div
         className={classNames(
-          "m-0 my-3 flex w-full items-center justify-between text-center md:mx-auto md:my-6 md:block md:max-w-fit md:justify-start md:text-left",
+          "m-0 mt-3 flex w-full items-center justify-between text-left md:mx-auto md:my-6 md:block md:max-w-fit md:justify-start md:text-center",
           loading && "animate-pulse blur-md",
         )}
       >

@@ -68,66 +68,79 @@ export default function Weather({}: Props) {
   function WeatherMarkup({ weather }: { weather: WeatherData | null }) {
     return (
       <>
-        <div className="hidden items-center justify-between gap-5 md:flex">
-          <div className="grow">
-            <div className="text-2xl font-bold md:text-3xl">
-              {weather ? weather.temperature : "11°C"}
-            </div>
-            <div className="text-base md:text-lg">
-              It Feels like{" "}
-              <div className="text-lg font-bold md:text-xl">
-                {weather ? weather.feelsLike : "11°C"}
+        <div className="hidden md:block">
+          <Card>
+            <CardContent className="flex items-center justify-around gap-6">
+              <div className="!justify-self-start">
+                <div className="text-2xl font-bold md:text-3xl">
+                  {weather ? weather.temperature : "11°C"}
+                </div>
+                <div className="text-base md:text-lg">
+                  It Feels like{" "}
+                  <div className="text-lg font-bold md:text-xl">
+                    {weather ? weather.feelsLike : "11°C"}
+                  </div>
+                </div>
+                Wind Speed: {weather ? weather.windSpeed : "5 mph"}
               </div>
-            </div>
-            Wind Speed: {weather ? weather.windSpeed : "5 mph"}
-          </div>
-
-          {/* <div className="rounded bg-neutral-400 p-3"> */}
-          <Card className="p-0">
-            <Image
-              src={weather ? weather.iconSrc : weatherCodes["0"].day.image}
-              alt=""
-              width="50"
-              height="50"
-              className={cn(
-                "h-auto w-40 object-center",
-                !weather && "opacity-50",
-              )}
-              unoptimized
-              priority
-            />
-            {/* </div> */}
+              <Image
+                src={weather ? weather.iconSrc : weatherCodes["0"].day.image}
+                alt=""
+                width="50"
+                height="50"
+                className={cn(
+                  "h-auto w-40 object-center",
+                  !weather && "opacity-50",
+                )}
+                unoptimized
+                priority
+              />
+            </CardContent>
           </Card>
         </div>
-        {/* <div className="my-3 min-h-40 rounded bg-neutral-400 p-3 text-neutral-900 md:min-h-44"> */}
-        {/* <div className="mb-2 font-bold">7-Day Forecast</div> */}
-        {/* <div className="grid grid-cols-7 items-center justify-between"> */}
-        <Card className="mt-3">
+
+        <Card className="my-6">
           <CardHeader>7-Day Forecast</CardHeader>
           <CardContent className="grid grid-cols-7 items-center justify-between">
-            {weather?.daily.map((day, i) => (
-              <React.Fragment key={i}>
-                <div key={i} className="flex flex-col items-center gap-2">
-                  <div className="text-sm font-bold">
-                    {format(new Date(day.time * 1000), "E")}
-                  </div>
-                  <Image
-                    src={getIconSrc(1, day.weatherCode)}
-                    alt=""
-                    width="50"
-                    height="50"
-                    className="-m-3 h-auto w-15"
-                    unoptimized
-                  />
-                  <div className="text-sm">{day.temperature}</div>
-                  <div className="text-sm">{day.precipitation}%</div>
-                </div>
-              </React.Fragment>
-            ))}
+            {weather
+              ? weather.daily.map((day, i) => (
+                  <React.Fragment key={i}>
+                    <div key={i} className="flex flex-col items-center gap-2">
+                      <div className="text-sm font-bold">
+                        {format(new Date(day.time * 1000), "E")}
+                      </div>
+                      <Image
+                        src={getIconSrc(1, day.weatherCode)}
+                        alt=""
+                        width="50"
+                        height="50"
+                        className="-m-3 h-auto w-15"
+                        unoptimized
+                      />
+                      <div className="text-sm">{day.temperature}</div>
+                      <div className="text-sm">{day.precipitation}%</div>
+                    </div>
+                  </React.Fragment>
+                ))
+              : [...Array(7).keys()].map((i) => (
+                  <React.Fragment key={i}>
+                    <div key={i} className="flex flex-col items-center gap-2">
+                      <div className="text-sm font-bold">--</div>
+                      <Image
+                        src={getIconSrc(1, 0)}
+                        alt=""
+                        width="50"
+                        height="50"
+                        className="-m-3 h-auto w-15"
+                        unoptimized
+                      />
+                      <div className="text-sm">--</div>
+                      <div className="text-sm">--</div>
+                    </div>
+                  </React.Fragment>
+                ))}
           </CardContent>
         </Card>
-        {/* </div> */}
-        {/* </div> */}
       </>
     );
   }
