@@ -72,12 +72,14 @@ export type IWeatherAPIError = {
   reason: string;
 };
 
-export type WeatherDataListDaily = {
+export type WeatherDataListDay = {
   temperature: string;
   precipitation: number;
   weatherCode: number;
   time: number;
-}[];
+};
+
+export type WeatherDataListDaily = WeatherDataListDay[];
 
 export type WeatherData = {
   temperature: string;
@@ -88,3 +90,7 @@ export type WeatherData = {
 };
 
 export type WeatherDataList = WeatherData[];
+
+export type PackageVersions = {
+  [key: string]: string;
+};

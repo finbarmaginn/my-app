@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import { cn } from "@/lib/utils";
 import { services } from "./data";
 import TVServiceImage from "./TVServiceImage";
 import { Card } from "@/components/ui/card";
@@ -14,7 +14,7 @@ export default function TVServices() {
               key={service.name}
             >
               <a
-                className={classNames(
+                className={cn(
                   "transition-opacity duration-300 hover:opacity-40",
                 )}
                 href={service.url}

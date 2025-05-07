@@ -1,6 +1,6 @@
 "use client";
 
-import classNames from "classnames";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { useEffect, useRef, useState } from "react";
 
@@ -34,7 +34,7 @@ export default function Clock() {
   return (
     <div>
       <div
-        className={classNames(
+        className={cn(
           "m-0 mt-3 flex w-full items-center justify-between text-left md:mx-auto md:my-6 md:block md:max-w-fit md:justify-start md:text-center",
           loading && "animate-pulse blur-md",
         )}

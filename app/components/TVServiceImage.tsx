@@ -1,5 +1,5 @@
 "use client";
-import classNames from "classnames";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -17,7 +17,7 @@ export default function TVServiceImage({
   return (
     <>
       <Image
-        className={classNames(imgLoading && "animate-pulse blur-md", "mx-auto")}
+        className={cn(imgLoading && "animate-pulse blur-md", "mx-auto")}
         src={service.img}
         alt={service.name}
         width={service.size.w}
