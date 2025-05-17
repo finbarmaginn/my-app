@@ -1,8 +1,8 @@
 import { WeatherData } from "@/app/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { weatherCodes } from "../data";
 import Image from "next/image";
+import { weatherCodes } from "../data";
 
 export default function Today({ weather }: { weather: WeatherData | null }) {
   return (

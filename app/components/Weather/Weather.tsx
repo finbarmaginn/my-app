@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import type { IWeatherData, WeatherDataList } from "../../types";
 import toast from "react-hot-toast";
 import { ApiError } from "next/dist/server/api-utils";
-import { weatherCodes } from "../data";
 import useSWR from "swr";
 import { cn } from "@/lib/utils";
 import Today from "./Today";
 import ForecastWeek from "./ForecastWeek";
+import { weatherCodes } from "../data";
+import { IWeatherData, WeatherDataList } from "@/app/types";
 
 type Props = {
   weatherData?: IWeatherData;
