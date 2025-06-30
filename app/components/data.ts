@@ -1,5 +1,3 @@
-import pjson from "../../package.json" assert { type: "json" };
-
 export const services = [
   {
     name: "Netflix",
@@ -339,11 +337,3 @@ export const weatherCodes = {
     },
   },
 };
-
-// export const packageVersions = {
-//   next: pjson.dependencies["next"],
-//   react: pjson.dependencies["react"],
-//   tailwind: pjson.dependencies["@tailwindcss/postcss"],
-//   swr: pjson.dependencies["swr"],
-//   leveraging: "shadcn & open-meteo",
-// };
